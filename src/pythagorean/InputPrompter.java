@@ -10,6 +10,7 @@ import java.util.Scanner;
  */
 public class InputPrompter {
 	private Scanner scanner;
+	private Object resultCache;
 
 	InputPrompter(InputStream inputStream) {
 		scanner = new Scanner(inputStream);
@@ -21,7 +22,13 @@ public class InputPrompter {
 	}
 
 	public int nextInt() {
-		return scanner.nextInt();
+		ForeverTryer.untilPass(() -> {
+			resultCache = scanner.nextInt();
+		}, () -> {
+			System.out.println("Invalid! Please enter an int.");
+			scanner.nextLine();
+		});
+		return (int) resultCache;
 	}
 
 	public double nextPositiveDouble(String message) {
@@ -44,7 +51,13 @@ public class InputPrompter {
 	}
 
 	public double nextDouble() {
-		return scanner.nextInt();
+		ForeverTryer.untilPass(() -> {
+			resultCache = scanner.nextDouble();
+		}, () -> {
+			System.out.println("Invalid! Please enter a double.");
+			scanner.nextLine();
+		});
+		return (double) resultCache;
 	}
 
 	public boolean nextYesNo(String message) {
